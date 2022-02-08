@@ -29,4 +29,7 @@ public class Student {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "aid")
+    private long addressId;
 }

@@ -23,9 +23,9 @@ public class StudentController {
 
     @PostMapping(value = "/")
     public ResponseEntity<?> saveStudent(@RequestBody StudentDTO studentDTO) {
-        Student student = studentService.saveStudent(studentDTO);
+        StudentDTO student = studentService.saveStudent(studentDTO);
         if (student != null) {
-            return new ResponseEntity<Student>(student, HttpStatus.CREATED);
+            return new ResponseEntity<StudentDTO>(student, HttpStatus.CREATED);
         }
         return new ResponseEntity<String>("Failed", HttpStatus.NO_CONTENT);
     }
