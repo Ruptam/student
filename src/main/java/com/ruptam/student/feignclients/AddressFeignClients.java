@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(url = "${address.application.url}", value = "address-feign-client", path = "/address")
+@FeignClient(value = "address-service", path = "/address")
 public interface AddressFeignClients {
 
 
