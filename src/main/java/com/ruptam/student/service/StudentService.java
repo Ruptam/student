@@ -3,6 +3,7 @@ package com.ruptam.student.service;
 import java.util.Optional;
 
 import com.ruptam.student.entity.Student;
+import com.ruptam.student.feignclients.AddressFeignClients;
 import com.ruptam.student.model.AddressDTO;
 import com.ruptam.student.model.StudentDTO;
 import com.ruptam.student.repository.StudentRepo;
@@ -10,9 +11,9 @@ import com.ruptam.student.repository.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+// import org.springframework.web.reactive.function.client.WebClient;
 
-import reactor.core.publisher.Mono;
+// import reactor.core.publisher.Mono;
 
 @Service
 public class StudentService {
@@ -20,8 +21,11 @@ public class StudentService {
     @Autowired
     private StudentRepo studentRepo;
 
+    // @Autowired
+    // private WebClient webClient;
+
     @Autowired
-    private WebClient webClient;
+    private AddressFeignClients addressFeignClients;
     
     public StudentDTO saveStudent(StudentDTO studentDTO) {
         Student student = new Student();
@@ -30,7 +34,8 @@ public class StudentService {
         Student savedStudent = studentRepo.save(student);
         StudentDTO studentDto = new StudentDTO();
         studentDto.setName(savedStudent.getName());
-        studentDto.setAddressDTO(getAddressById(savedStudent.getAddressId()));
+        // studentDto.setAddressDTO(getAddressById(savedStudent.getAddressId()));
+        studentDto.setAddressDTO(addressFeignClients.getAddressById(savedStudent.getAddressId()));
         return studentDto;
     }
 
@@ -42,10 +47,10 @@ public class StudentService {
         return null;
     }
 
-    private AddressDTO getAddressById(long addressId) {
-      Mono<AddressDTO> addressResponseEntity =
-         webClient.get().uri("?addressId=" + addressId).retrieve().bodyToMono(AddressDTO.class);
+    // private AddressDTO getAddressById(long addressId) {
+    //   Mono<AddressDTO> addressResponseEntity =
+    //      webClient.get().uri("?addressId=" + addressId).retrieve().bodyToMono(AddressDTO.class);
 
-        return addressResponseEntity.block();
-    }
+    //     return addressResponseEntity.block();
+    // }
 }
