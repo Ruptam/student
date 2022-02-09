@@ -3,10 +3,11 @@ package com.ruptam.student;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+// import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
+@EnableFeignClients("com.ruptam.student.feignclients")
 public class StudentApplication {
 
 	@Value("${address.application.url}")
@@ -16,10 +17,10 @@ public class StudentApplication {
 		SpringApplication.run(StudentApplication.class, args);
 	}
 
-	@Bean
-	public WebClient webClient() {
-		WebClient webClient = WebClient.builder().baseUrl(addressApplicationUrl).build();
-		return webClient;
-	}
+	// @Bean
+	// public WebClient webClient() {
+	// 	WebClient webClient = WebClient.builder().baseUrl(addressApplicationUrl).build();
+	// 	return webClient;
+	// }
 
 }
