@@ -8,15 +8,21 @@ import com.ruptam.student.model.AddressDTO;
 import com.ruptam.student.model.StudentDTO;
 import com.ruptam.student.repository.StudentRepo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 // import org.springframework.web.reactive.function.client.WebClient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 // import reactor.core.publisher.Mono;
 
 @Service
 public class StudentService {
+
+    Logger log = LoggerFactory.getLogger(StudentService.class);
 
     @Autowired
     private StudentRepo studentRepo;
@@ -25,7 +31,7 @@ public class StudentService {
     // private WebClient webClient;
 
     @Autowired
-    private AddressFeignClients addressFeignClients;
+    private CommonService commonService;
     
     public StudentDTO saveStudent(StudentDTO studentDTO) {
         Student student = new Student();
@@ -35,22 +41,30 @@ public class StudentService {
         StudentDTO studentDto = new StudentDTO();
         studentDto.setName(savedStudent.getName());
         // studentDto.setAddressDTO(getAddressById(savedStudent.getAddressId()));
-        studentDto.setAddressDTO(addressFeignClients.getAddressById(savedStudent.getAddressId()));
+        studentDto.setAddressDTO(commonService.getAddressById(savedStudent.getAddressId()));
         return studentDto;
     }
 
-    public Student getStudentById(Long id) {
+    public StudentDTO getStudentById(Long id) {
         Optional<Student> optionalStudent = studentRepo.findById(id);
         if (optionalStudent.isPresent()) {
-            return optionalStudent.get();
+            Student student = optionalStudent.get();
+            StudentDTO studentDTO = new StudentDTO();
+            studentDTO.setName(student.getName());
+            studentDTO.setAddressId(student.getAddressId());
+            studentDTO.setAddressDTO(commonService.getAddressById(student.getAddressId()));
+            return studentDTO;
         }
         return null;
     }
 
+    // @CircuitBreaker(name = "addressService", fallbackMethod = "getAddressByIdFallBack")
     // private AddressDTO getAddressById(long addressId) {
-    //   Mono<AddressDTO> addressResponseEntity =
-    //      webClient.get().uri("?addressId=" + addressId).retrieve().bodyToMono(AddressDTO.class);
+    //     return addressFeignClients.getAddressById(addressId);
+    // }
 
-    //     return addressResponseEntity.block();
+    // private AddressDTO getAddressByIdFallBack(long addressId, Throwable th) {
+    //     log.info("Circuit breaker method triggered");
+    //     return new AddressDTO();
     // }
 }
