@@ -32,9 +32,9 @@ public class StudentController {
 
     @GetMapping(value = "/")
     public ResponseEntity<?> getStudentById(@RequestParam("studentId") Long studentId) {
-        Student student = studentService.getStudentById(studentId);
+        StudentDTO student = studentService.getStudentById(studentId);
         if (student != null) {
-            return new ResponseEntity<Student>(student, HttpStatus.FOUND);
+            return new ResponseEntity<StudentDTO>(student, HttpStatus.FOUND);
         }
         return new ResponseEntity<String>("Failed", HttpStatus.NOT_FOUND);
     }
